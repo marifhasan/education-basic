@@ -16,53 +16,53 @@ class AcademicYearForm
     {
         return $schema
             ->components([
-                Grid::make(1)->schema([
-                    Section::make('Academic Year Details')
-                        ->schema([
-                            Select::make('curriculum_id')
-                                ->label('Curriculum')
-                                ->relationship('curriculum', 'name')
-                                ->required()
-                                ->searchable()
-                                ->preload()
-                                ->helperText('Select the curriculum this academic year belongs to'),
+                Section::make('Academic Year Details')
+                    ->schema([
+                        Select::make('curriculum_id')
+                            ->label('Curriculum')
+                            ->relationship('curriculum', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Select the curriculum this academic year belongs to')
+                            ->columnSpan(2),
 
-                            TextInput::make('name')
-                                ->label('Academic Year Name')
-                                ->required()
-                                ->maxLength(255)
-                                ->placeholder('e.g., 2024-2025')
-                                ->helperText('Format: YYYY-YYYY'),
+                        TextInput::make('name')
+                            ->label('Academic Year Name')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('e.g., 2024-2025')
+                            ->helperText('Format: YYYY-YYYY')
+                            ->columnSpan(2),
 
-                            DatePicker::make('start_date')
-                                ->label('Start Date')
-                                ->required()
-                                ->native(false)
-                                ->displayFormat('d M Y'),
+                        DatePicker::make('start_date')
+                            ->label('Start Date')
+                            ->required()
+                            ->native(false)
+                            ->displayFormat('d M Y'),
 
-                            DatePicker::make('end_date')
-                                ->label('End Date')
-                                ->required()
-                                ->native(false)
-                                ->displayFormat('d M Y')
-                                ->after('start_date'),
-                        ])
-                        ->columns(2),
+                        DatePicker::make('end_date')
+                            ->label('End Date')
+                            ->required()
+                            ->native(false)
+                            ->displayFormat('d M Y')
+                            ->after('start_date'),
+                    ])
+                    ->columns(2),
 
-                    Section::make('Status')
-                        ->schema([
-                            Toggle::make('is_active')
-                                ->label('Active')
-                                ->helperText('Only one academic year can be active per curriculum')
-                                ->default(false),
+                Section::make('Status')
+                    ->schema([
+                        Toggle::make('is_active')
+                            ->label('Active')
+                            ->helperText('Only one academic year can be active per curriculum')
+                            ->default(false),
 
-                            Toggle::make('is_closed')
-                                ->label('Closed')
-                                ->helperText('Mark as closed when the academic year ends')
-                                ->default(false),
-                        ])
-                        ->columns(2),
-                ]),
+                        Toggle::make('is_closed')
+                            ->label('Closed')
+                            ->helperText('Mark as closed when the academic year ends')
+                            ->default(false),
+                    ])
+                    ->columns(1),
             ]);
     }
 }

@@ -9,11 +9,13 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewClassModel extends ViewRecord
 {
     protected static string $resource = ClassModelResource::class;
+    
+    protected static ?string $title = 'Class Details';
 
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()->label('Edit Class'),
         ];
     }
 }

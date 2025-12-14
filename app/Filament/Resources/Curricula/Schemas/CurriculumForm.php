@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Curricula\Schemas;
 
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class CurriculumForm
@@ -21,13 +21,15 @@ class CurriculumForm
                             ->required()
                             ->maxLength(255)
                             ->label('Curriculum Name')
-                            ->placeholder('e.g., National Curriculum, Madrasah Curriculum'),
+                            ->placeholder('e.g., National Curriculum, Madrasah Curriculum')
+                            ->columnSpan(2),
                         TextInput::make('code')
                             ->required()
                             ->maxLength(50)
                             ->unique(ignoreRecord: true)
                             ->label('Curriculum Code')
-                            ->placeholder('e.g., NAT, MAD'),
+                            ->placeholder('e.g., NAT, MAD')
+                            ->columnSpan(2),
                         Textarea::make('description')
                             ->rows(3)
                             ->columnSpanFull()
@@ -40,20 +42,36 @@ class CurriculumForm
                         Select::make('academic_year_start_month')
                             ->required()
                             ->options([
-                                1 => 'January', 2 => 'February', 3 => 'March',
-                                4 => 'April', 5 => 'May', 6 => 'June',
-                                7 => 'July', 8 => 'August', 9 => 'September',
-                                10 => 'October', 11 => 'November', 12 => 'December',
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
+                                5 => 'May',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December',
                             ])
                             ->default(1)
                             ->label('Academic Year Start Month'),
                         Select::make('academic_year_end_month')
                             ->required()
                             ->options([
-                                1 => 'January', 2 => 'February', 3 => 'March',
-                                4 => 'April', 5 => 'May', 6 => 'June',
-                                7 => 'July', 8 => 'August', 9 => 'September',
-                                10 => 'October', 11 => 'November', 12 => 'December',
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
+                                5 => 'May',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December',
                             ])
                             ->default(12)
                             ->label('Academic Year End Month'),

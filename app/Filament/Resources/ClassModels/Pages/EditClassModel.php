@@ -13,13 +13,15 @@ class EditClassModel extends EditRecord
 {
     protected static string $resource = ClassModelResource::class;
 
+    protected static ?string $title = 'Edit Class';
+
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            ViewAction::make()->label('View Class'),
+            DeleteAction::make()->label('Delete Class'),
+            ForceDeleteAction::make()->label('Force Delete Class'),
+            RestoreAction::make()->label('Restore Class'),
         ];
     }
 }

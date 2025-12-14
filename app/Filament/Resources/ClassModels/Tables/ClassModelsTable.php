@@ -25,9 +25,9 @@ class ClassModelsTable
                     ->searchable(),
                 TextColumn::make('code')
                     ->searchable(),
-                TextColumn::make('order')
-                    ->numeric()
-                    ->sortable(),
+                // TextColumn::make('order')
+                //     ->numeric()
+                //     ->sortable(),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

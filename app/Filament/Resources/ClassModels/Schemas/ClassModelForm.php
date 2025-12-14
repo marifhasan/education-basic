@@ -24,7 +24,8 @@ class ClassModelForm
                                 ->relationship('curriculum', 'name')
                                 ->required()
                                 ->searchable()
-                                ->preload(),
+                                ->preload()
+                                ->columnSpan(2),
 
                             TextInput::make('name')
                                 ->label('Class Name')
@@ -39,13 +40,13 @@ class ClassModelForm
                                 ->placeholder('e.g., CLS-1, G5')
                                 ->unique(ignoreRecord: true),
 
-                            TextInput::make('order')
-                                ->label('Display Order')
-                                ->required()
-                                ->numeric()
-                                ->default(0)
-                                ->minValue(0)
-                                ->helperText('Used for sorting (lower numbers appear first)'),
+                            // TextInput::make('order')
+                            //     ->label('Display Order')
+                            //     ->required()
+                            //     ->numeric()
+                            //     ->default(0)
+                            //     ->minValue(0)
+                            //     ->helperText('Used for sorting (lower numbers appear first)'),
 
                             Textarea::make('description')
                                 ->label('Description')

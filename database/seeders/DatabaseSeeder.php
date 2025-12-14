@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
         // Call seeders
         $this->call([
             // DefaultCurriculumSeeder::class,
-            // FeeItemSeeder::class,
-            // DiscountTypeSeeder::class,
+            FeeItemSeeder::class,
+            DiscountTypeSeeder::class,
         ]);
 
         $this->command->info('✅ Database seeded successfully');
