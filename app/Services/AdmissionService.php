@@ -57,9 +57,9 @@ class AdmissionService
                 'family_id' => $admission->family_id,
                 'first_name' => $admission->applicant_first_name,
                 'last_name' => $admission->applicant_last_name,
-                'gender' => $admission->gender,
-                'date_of_birth' => $admission->date_of_birth,
-                'photo_path' => $admission->photo_path,
+                'gender' => $admission->applicant_gender,
+                'date_of_birth' => $admission->applicant_dob,
+                'photo_path' => $admission->applicant_photo_path,
                 'admission_date' => now(),
                 'status' => StudentStatus::ACTIVE,
                 'is_active' => true,
@@ -120,7 +120,7 @@ class AdmissionService
 
                 // Calculate discount amount
                 $discountAmount = $discountType->calculateDiscount(
-                    $admission->admission_fee,
+                    $admission->admission_fee_amount,
                     $discountData['discount_value'] ?? null
                 );
 
@@ -140,7 +140,7 @@ class AdmissionService
             // Update admission with calculated amounts
             $admission->update([
                 'discount_amount' => $totalDiscount,
-                'net_amount' => max(0, $admission->admission_fee - $totalDiscount),
+                'net_amount' => max(0, $admission->admission_fee_amount - $totalDiscount),
             ]);
 
             return $admission->fresh();

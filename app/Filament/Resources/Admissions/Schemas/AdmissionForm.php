@@ -34,25 +34,26 @@ class AdmissionForm
                                 ->helperText('Will be auto-generated: ADM-YYYY-0001'),
 
                             Select::make('academic_year_id')
-                                ->relationship('academicYear', 'name', fn ($query) => $query->where('is_active', true))
+                                ->relationship('academicYear', 'name', fn($query) => $query->where('is_active', true))
                                 ->required()
                                 ->searchable()
                                 ->preload()
                                 ->live()
-                                ->afterStateUpdated(fn (Set $set) => $set('class_id', null)),
+                                ->afterStateUpdated(fn(Set $set) => $set('class_id', null)),
 
                             Select::make('class_id')
                                 ->label('Class')
-                                ->options(fn (Get $get) => ClassModel::query()
-                                    ->when($get('academic_year_id'), function ($query, $yearId) {
-                                        $query->whereHas('academicYears', fn ($q) => $q->where('academic_years.id', $yearId));
-                                    })
-                                    ->pluck('name', 'id')
+                                ->options(
+                                    fn(Get $get) => ClassModel::query()
+                                        ->when($get('academic_year_id'), function ($query, $yearId) {
+                                            $query->whereHas('academicYears', fn($q) => $q->where('academic_years.id', $yearId));
+                                        })
+                                        ->pluck('name', 'id')
                                 )
                                 ->required()
                                 ->searchable()
                                 ->preload()
-                                ->disabled(fn (Get $get) => ! $get('academic_year_id'))
+                                ->disabled(fn(Get $get) => ! $get('academic_year_id'))
                                 ->helperText('Select academic year first'),
 
                             DatePicker::make('application_date')
@@ -68,7 +69,7 @@ class AdmissionForm
                             Select::make('family_id')
                                 ->relationship('family', 'family_code')
                                 ->searchable(['family_code', 'father_name', 'father_phone'])
-                                ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->family_code} - {$record->father_name}")
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->family_code} - {$record->father_name}")
                                 ->createOptionForm([
                                     TextInput::make('father_name')->required(),
                                     TextInput::make('father_phone')->tel()->required(),
@@ -81,6 +82,38 @@ class AdmissionForm
                         ])
                         ->columns(1),
 
+                    Section::make('Status & Approval')
+                        ->schema([
+                            Select::make('status')
+                                ->options(AdmissionStatus::class)
+                                ->default(AdmissionStatus::PENDING)
+                                ->required()
+                                ->native(false)
+                                ->disabled(fn($record) => $record?->status === AdmissionStatus::ADMITTED),
+
+                            Select::make('payment_status')
+                                ->options(PaymentStatus::class)
+                                ->default(PaymentStatus::UNPAID)
+                                ->required()
+                                ->native(false)
+                                ->disabled(),
+
+                            DatePicker::make('approval_date')
+                                ->label('Approval Date')
+                                ->disabled()
+                                ->dehydrated()
+                                ->native(false),
+
+                            Textarea::make('rejection_reason')
+                                ->label('Rejection Reason')
+                                ->rows(3)
+                                ->visible(fn(Get $get) => $get('status') === AdmissionStatus::REJECTED->value)
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(3)
+                        ->visible(fn($record) => $record !== null),
+                ]),
+                Grid::make(1)->schema([
                     Section::make('Applicant Information')
                         ->schema([
                             TextInput::make('applicant_first_name')
@@ -154,36 +187,6 @@ class AdmissionForm
                         ])
                         ->columns(3),
 
-                    Section::make('Status & Approval')
-                        ->schema([
-                            Select::make('status')
-                                ->options(AdmissionStatus::class)
-                                ->default(AdmissionStatus::PENDING)
-                                ->required()
-                                ->native(false)
-                                ->disabled(fn ($record) => $record?->status === AdmissionStatus::ADMITTED),
-
-                            Select::make('payment_status')
-                                ->options(PaymentStatus::class)
-                                ->default(PaymentStatus::UNPAID)
-                                ->required()
-                                ->native(false)
-                                ->disabled(),
-
-                            DatePicker::make('approval_date')
-                                ->label('Approval Date')
-                                ->disabled()
-                                ->dehydrated()
-                                ->native(false),
-
-                            Textarea::make('rejection_reason')
-                                ->label('Rejection Reason')
-                                ->rows(3)
-                                ->visible(fn (Get $get) => $get('status') === AdmissionStatus::REJECTED->value)
-                                ->columnSpanFull(),
-                        ])
-                        ->columns(3)
-                        ->visible(fn ($record) => $record !== null),
                 ]),
             ]);
     }

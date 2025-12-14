@@ -25,15 +25,15 @@ class Admission extends Model
         'applicant_first_name',
         'applicant_last_name',
         'applicant_full_name',
-        'gender',
-        'date_of_birth',
-        'photo_path',
+        'applicant_gender',
+        'applicant_dob',
+        'applicant_photo_path',
         'application_date',
         'status',
         'approval_date',
         'approved_by',
         'rejection_reason',
-        'admission_fee',
+        'admission_fee_amount',
         'discount_amount',
         'net_amount',
         'payment_status',
@@ -45,8 +45,8 @@ class Admission extends Model
         'payment_status' => PaymentStatus::class,
         'application_date' => 'date',
         'approval_date' => 'date',
-        'date_of_birth' => 'date',
-        'admission_fee' => 'decimal:2',
+        'applicant_dob' => 'date',
+        'admission_fee_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'net_amount' => 'decimal:2',
     ];
@@ -126,6 +126,6 @@ class Admission extends Model
     {
         $totalDiscount = $this->admissionDiscounts()->sum('discount_amount');
 
-        return max(0, $this->admission_fee - $totalDiscount);
+        return max(0, $this->admission_fee_amount - $totalDiscount);
     }
 }
