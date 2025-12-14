@@ -37,7 +37,10 @@ class StudentsByClassChart extends ChartWidget
                     ->where('is_active', true);
             },
         ])
-            ->having('student_academic_records_count', '>', 0)
+            ->whereHas('studentAcademicRecords', function ($query) use ($selectedYearId) {
+                $query->where('academic_year_id', $selectedYearId)
+                    ->where('is_active', true);
+            })
             ->orderBy('display_order')
             ->get();
 

@@ -6,7 +6,7 @@
     <select
         id="academic-year-select"
         wire:model.live="selectedYearId"
-        class="border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-1.5"
+        class="col-start-1 row-start-1 w-full appearance-none rounded-md py-1.5 pl-3 pr-8 text-base outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6"
     >
         <option value="">All Years (No Filter)</option>
         @foreach($academicYears as $year)

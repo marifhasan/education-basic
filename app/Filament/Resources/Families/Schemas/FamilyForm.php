@@ -17,18 +17,6 @@ class FamilyForm
         return $schema
             ->components([
                 Grid::make(1)->schema([
-                    Section::make('Family Code')
-                        ->schema([
-                            TextInput::make('family_code')
-                                ->label('Family Code')
-                                ->disabled()
-                                ->dehydrated(false)
-                                ->placeholder('Auto-generated')
-                                ->helperText('Will be auto-generated: FAM-00001'),
-                        ])
-                        ->columns(1)
-                        ->visible(fn ($record) => $record === null),
-
                     Section::make('Father Information')
                         ->schema([
                             TextInput::make('father_name')
@@ -102,6 +90,20 @@ class FamilyForm
                         ->columns(2)
                         ->collapsible()
                         ->collapsed(),
+
+                ]),
+                Grid::make(1)->schema([
+                    Section::make('Family Code')
+                        ->schema([
+                            TextInput::make('family_code')
+                                ->label('Family Code')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->placeholder('Auto-generated')
+                                ->helperText('Will be auto-generated: FAM-00001'),
+                        ])
+                        ->columns(1)
+                        ->visible(fn ($record) => $record === null),
 
                     Section::make('Contact Information')
                         ->schema([

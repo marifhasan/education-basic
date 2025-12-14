@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Students\Schemas;
 
+use App\Enums\BloodGroup;
 use App\Enums\Gender;
+use App\Enums\Religion;
 use App\Enums\StudentStatus;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -21,25 +23,6 @@ class StudentForm
         return $schema
             ->components([
                 Grid::make(1)->schema([
-                    Section::make('Student Code & Family')
-                        ->schema([
-                            TextInput::make('student_code')
-                                ->label('Student Code')
-                                ->disabled()
-                                ->dehydrated(false)
-                                ->placeholder('Auto-generated')
-                                ->helperText('Will be auto-generated: STD-00001'),
-
-                            Select::make('family_id')
-                                ->label('Family')
-                                ->relationship('family', 'family_code')
-                                ->searchable(['family_code', 'father_name', 'father_phone'])
-                                ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->family_code} - {$record->father_name}")
-                                ->required()
-                                ->preload(),
-                        ])
-                        ->columns(2),
-
                     Section::make('Personal Information')
                         ->schema([
                             TextInput::make('first_name')
@@ -68,16 +51,18 @@ class StudentForm
 
                             TextInput::make('birth_certificate_number')
                                 ->label('Birth Certificate Number')
-                                ->maxLength(50),
+                                ->maxLength(50)
+                                ->columnSpanFull(),
 
-                            TextInput::make('religion')
+                            Select::make('religion')
                                 ->label('Religion')
-                                ->maxLength(50),
+                                ->options(Religion::class)
+                                ->native(false),
 
-                            TextInput::make('blood_group')
+                            Select::make('blood_group')
                                 ->label('Blood Group')
-                                ->maxLength(10)
-                                ->placeholder('A+, B+, O+, AB+, etc.'),
+                                ->options(BloodGroup::class)
+                                ->native(false),
 
                             FileUpload::make('photo_path')
                                 ->label('Student Photo')
@@ -87,8 +72,64 @@ class StudentForm
                                 ->maxSize(2048)
                                 ->columnSpanFull(),
                         ])
-                        ->columns(3),
+                        ->columns(2),
 
+                    Section::make('Admission & Status')
+                        ->schema([
+                            DatePicker::make('admission_date')
+                                ->label('Admission Date')
+                                ->required()
+                                ->default(now())
+                                ->native(false)
+                                ->displayFormat('d M Y'),
+
+                            Select::make('status')
+                                ->options(StudentStatus::class)
+                                ->default(StudentStatus::ACTIVE)
+                                ->required()
+                                ->native(false),
+
+                            DatePicker::make('leaving_date')
+                                ->label('Leaving Date')
+                                ->native(false)
+                                ->displayFormat('d M Y')
+                                ->visible(fn(Get $get) => in_array($get('status'), [
+                                    StudentStatus::ALUMNI->value,
+                                    StudentStatus::DROPOUT->value,
+                                    StudentStatus::TRANSFERRED->value,
+                                ])),
+
+                            Textarea::make('leaving_reason')
+                                ->label('Leaving Reason')
+                                ->rows(3)
+                                ->visible(fn(Get $get) => in_array($get('status'), [
+                                    StudentStatus::ALUMNI->value,
+                                    StudentStatus::DROPOUT->value,
+                                    StudentStatus::TRANSFERRED->value,
+                                ]))
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2),
+                ]),
+                Grid::make(1)->schema([
+                    Section::make('Student Code & Family')
+                        ->schema([
+                            TextInput::make('student_code')
+                                ->label('Student Code')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->placeholder('Auto-generated')
+                                ->helperText('Will be auto-generated: STD-00001'),
+
+                            Select::make('family_id')
+                                ->label('Family')
+                                ->relationship('family', 'family_code')
+                                ->searchable(['family_code', 'father_name', 'father_phone'])
+                                ->getOptionLabelFromRecordUsing(fn($record) => "{$record->family_code} - {$record->father_name}")
+                                ->required()
+                                ->preload(),
+                        ])
+                        ->columns(2),
                     Section::make('Previous Education')
                         ->schema([
                             TextInput::make('previous_school')
@@ -127,43 +168,6 @@ class StudentForm
                         ->columns(1)
                         ->collapsible()
                         ->collapsed(),
-
-                    Section::make('Admission & Status')
-                        ->schema([
-                            DatePicker::make('admission_date')
-                                ->label('Admission Date')
-                                ->required()
-                                ->default(now())
-                                ->native(false)
-                                ->displayFormat('d M Y'),
-
-                            Select::make('status')
-                                ->options(StudentStatus::class)
-                                ->default(StudentStatus::ACTIVE)
-                                ->required()
-                                ->native(false),
-
-                            DatePicker::make('leaving_date')
-                                ->label('Leaving Date')
-                                ->native(false)
-                                ->displayFormat('d M Y')
-                                ->visible(fn (Get $get) => in_array($get('status'), [
-                                    StudentStatus::ALUMNI->value,
-                                    StudentStatus::DROPOUT->value,
-                                    StudentStatus::TRANSFERRED->value,
-                                ])),
-
-                            Textarea::make('leaving_reason')
-                                ->label('Leaving Reason')
-                                ->rows(3)
-                                ->visible(fn (Get $get) => in_array($get('status'), [
-                                    StudentStatus::ALUMNI->value,
-                                    StudentStatus::DROPOUT->value,
-                                    StudentStatus::TRANSFERRED->value,
-                                ]))
-                                ->columnSpanFull(),
-                        ])
-                        ->columns(2),
                 ]),
             ]);
     }

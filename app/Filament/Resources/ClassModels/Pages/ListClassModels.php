@@ -10,12 +10,10 @@ class ListClassModels extends ListRecords
 {
     protected static string $resource = ClassModelResource::class;
 
-    protected static ?string $title = 'Classes';
-
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Create Class'),
+            CreateAction::make(),
         ];
     }
 }

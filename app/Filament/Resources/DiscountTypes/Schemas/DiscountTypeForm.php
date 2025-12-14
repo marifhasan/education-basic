@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\DiscountTypes\Schemas;
 
 use App\Enums\DiscountCalculationType;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section as FormSection;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,9 +18,9 @@ class DiscountTypeForm
     {
         return $schema
             ->components([
-                Grid::make()
+                Grid::make(1)
                     ->schema([
-                        FormSection::make('Discount Type Details')
+                        Section::make('Discount Type Details')
                             ->schema([
                                 TextInput::make('name')
                                     ->required()
@@ -61,22 +61,25 @@ class DiscountTypeForm
                             ])
                             ->columns(2),
 
-                        FormSection::make('Settings')
-                            ->schema([
-                                Toggle::make('is_active')
-                                    ->label('Active')
-                                    ->default(true)
-                                    ->helperText('Only active discount types can be applied')
-                                    ->inline(false),
 
-                                Toggle::make('requires_approval')
-                                    ->label('Requires Approval')
-                                    ->default(false)
-                                    ->helperText('If enabled, discounts must be approved before applying')
-                                    ->inline(false),
-                            ])
-                            ->columns(2),
                     ]),
+                Grid::make(1)->schema([
+                    Section::make('Settings')
+                        ->schema([
+                            Toggle::make('is_active')
+                                ->label('Active')
+                                ->default(true)
+                                ->helperText('Only active discount types can be applied')
+                                ->inline(false),
+
+                            Toggle::make('requires_approval')
+                                ->label('Requires Approval')
+                                ->default(false)
+                                ->helperText('If enabled, discounts must be approved before applying')
+                                ->inline(false),
+                        ])
+                        ->columns(2),
+                ]),
             ]);
     }
 }

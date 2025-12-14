@@ -33,6 +33,16 @@ class ClassModelResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getModelLabel(): string
+    {
+        return 'Class';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Classes';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ClassModelForm::configure($schema);

@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ClassFeeStructures\Schemas;
 
 use App\Services\AcademicYearContext;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section as FormSection;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -16,9 +16,9 @@ class ClassFeeStructureForm
     {
         return $schema
             ->components([
-                Grid::make()
+                Grid::make(1)
                     ->schema([
-                        FormSection::make('Fee Structure Details')
+                        Section::make('Fee Structure Details')
                             ->schema([
                                 Select::make('academic_year_id')
                                     ->relationship('academicYear', 'name')

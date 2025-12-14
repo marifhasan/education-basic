@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\FeeItems\Schemas;
 
 use App\Enums\FeeType;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section as FormSection;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -17,9 +17,9 @@ class FeeItemForm
     {
         return $schema
             ->components([
-                Grid::make()
+                Grid::make(1)
                     ->schema([
-                        FormSection::make('Fee Item Details')
+                        Section::make('Fee Item Details')
                             ->schema([
                                 TextInput::make('name')
                                     ->required()
@@ -57,22 +57,25 @@ class FeeItemForm
                             ])
                             ->columns(2),
 
-                        FormSection::make('Settings')
-                            ->schema([
-                                Toggle::make('is_mandatory')
-                                    ->label('Mandatory')
-                                    ->default(false)
-                                    ->helperText('If enabled, this fee must be paid')
-                                    ->inline(false),
 
-                                Toggle::make('is_active')
-                                    ->label('Active')
-                                    ->default(true)
-                                    ->helperText('Only active fees appear in fee structures')
-                                    ->inline(false),
-                            ])
-                            ->columns(2),
                     ]),
+                Grid::make(1)->schema([
+                    Section::make('Settings')
+                        ->schema([
+                            Toggle::make('is_mandatory')
+                                ->label('Mandatory')
+                                ->default(false)
+                                ->helperText('If enabled, this fee must be paid')
+                                ->inline(false),
+
+                            Toggle::make('is_active')
+                                ->label('Active')
+                                ->default(true)
+                                ->helperText('Only active fees appear in fee structures')
+                                ->inline(false),
+                        ])
+                        ->columns(2),
+                ]),
             ]);
     }
 }

@@ -25,8 +25,10 @@ class StudentInfolist
                 TextEntry::make('birth_certificate_number')
                     ->placeholder('-'),
                 TextEntry::make('religion')
+                    ->badge()
                     ->placeholder('-'),
                 TextEntry::make('blood_group')
+                    ->badge()
                     ->placeholder('-'),
                 TextEntry::make('photo_path')
                     ->placeholder('-'),

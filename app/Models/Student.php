@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\BloodGroup;
 use App\Enums\Gender;
+use App\Enums\Religion;
 use App\Enums\StudentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,6 +41,8 @@ class Student extends Model
     protected $casts = [
         'gender' => Gender::class,
         'status' => StudentStatus::class,
+        'blood_group' => BloodGroup::class,
+        'religion' => Religion::class,
         'date_of_birth' => 'date',
         'admission_date' => 'date',
         'is_active' => 'boolean',

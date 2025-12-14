@@ -5,8 +5,8 @@ namespace App\Filament\Resources\StudentAcademicRecords\Schemas;
 use App\Enums\EnrollmentStatus;
 use App\Services\AcademicYearContext;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section as FormSection;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,9 +18,9 @@ class StudentAcademicRecordForm
     {
         return $schema
             ->components([
-                Grid::make()
+                Grid::make(1)
                     ->schema([
-                        FormSection::make('Enrollment Information')
+                        Section::make('Enrollment Information')
                             ->schema([
                                 Select::make('student_id')
                                     ->relationship('student', 'full_name')
@@ -75,47 +75,50 @@ class StudentAcademicRecordForm
                             ])
                             ->columns(2),
 
-                        FormSection::make('Academic Performance')
-                            ->schema([
-                                TextInput::make('final_percentage')
-                                    ->label('Final Percentage')
-                                    ->numeric()
-                                    ->suffix('%')
-                                    ->minValue(0)
-                                    ->maxValue(100)
-                                    ->columnSpan(1),
-
-                                TextInput::make('final_gpa')
-                                    ->label('Final GPA')
-                                    ->numeric()
-                                    ->minValue(0)
-                                    ->maxValue(5)
-                                    ->step(0.01)
-                                    ->columnSpan(1),
-
-                                TextInput::make('final_grade')
-                                    ->label('Final Grade')
-                                    ->maxLength(10)
-                                    ->placeholder('e.g., A+, A, B+')
-                                    ->columnSpan(1),
-
-                                TextInput::make('class_rank')
-                                    ->label('Class Rank')
-                                    ->numeric()
-                                    ->minValue(1)
-                                    ->columnSpan(1),
-
-                                DatePicker::make('promotion_date')
-                                    ->label('Promotion Date')
-                                    ->columnSpan(1),
-
-                                Textarea::make('remarks')
-                                    ->rows(3)
-                                    ->columnSpanFull(),
-                            ])
-                            ->columns(2)
-                            ->collapsible(),
                     ]),
+
+                Grid::make(1)->schema([
+                    Section::make('Academic Performance')
+                        ->schema([
+                            TextInput::make('final_percentage')
+                                ->label('Final Percentage')
+                                ->numeric()
+                                ->suffix('%')
+                                ->minValue(0)
+                                ->maxValue(100)
+                                ->columnSpan(1),
+
+                            TextInput::make('final_gpa')
+                                ->label('Final GPA')
+                                ->numeric()
+                                ->minValue(0)
+                                ->maxValue(5)
+                                ->step(0.01)
+                                ->columnSpan(1),
+
+                            TextInput::make('final_grade')
+                                ->label('Final Grade')
+                                ->maxLength(10)
+                                ->placeholder('e.g., A+, A, B+')
+                                ->columnSpan(1),
+
+                            TextInput::make('class_rank')
+                                ->label('Class Rank')
+                                ->numeric()
+                                ->minValue(1)
+                                ->columnSpan(1),
+
+                            DatePicker::make('promotion_date')
+                                ->label('Promotion Date')
+                                ->columnSpan(1),
+
+                            Textarea::make('remarks')
+                                ->rows(3)
+                                ->columnSpanFull(),
+                        ])
+                        ->columns(2)
+                        ->collapsible(),
+                ]),
             ]);
     }
 }
