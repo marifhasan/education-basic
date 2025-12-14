@@ -11,6 +11,7 @@ use App\Filament\Resources\Admissions\Schemas\AdmissionInfolist;
 use App\Filament\Resources\Admissions\Tables\AdmissionsTable;
 use App\Models\Admission;
 use App\Services\AcademicYearContext;
+use App\Services\OnboardingChecklist;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -44,8 +45,24 @@ class AdmissionResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Only show Admissions when an academic year is selected
-        return AcademicYearContext::hasSelectedYear();
+        // Admissions require THREE conditions:
+        // 1. Onboarding must be marked complete
+        // 2. All onboarding checks must pass (dynamic validation)
+        // 3. An academic year must be selected
+        return OnboardingChecklist::canAccessAdmission()
+            && AcademicYearContext::hasSelectedYear();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Filter by selected academic year if one is chosen
+        if ($yearId = AcademicYearContext::getSelectedYearId()) {
+            $query->where('academic_year_id', $yearId);
+        }
+
+        return $query;
     }
 
     public static function form(Schema $schema): Schema

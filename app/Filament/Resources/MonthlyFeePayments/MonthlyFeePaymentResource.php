@@ -31,6 +31,20 @@ class MonthlyFeePaymentResource extends Resource
         return AcademicYearContext::hasSelectedYear();
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Filter by selected academic year through relationships
+        if ($yearId = AcademicYearContext::getSelectedYearId()) {
+            $query->whereHas('studentMonthlyFee.studentAcademicRecord', function (Builder $query) use ($yearId) {
+                $query->where('academic_year_id', $yearId);
+            });
+        }
+
+        return $query;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return MonthlyFeePaymentForm::configure($schema);

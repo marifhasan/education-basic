@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class MonthlyFeeGenerationResource extends Resource
 {
@@ -27,6 +28,18 @@ class MonthlyFeeGenerationResource extends Resource
     {
         // Only show Monthly Fee Generation when an academic year is selected
         return AcademicYearContext::hasSelectedYear();
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Filter by selected academic year if one is chosen
+        if ($yearId = AcademicYearContext::getSelectedYearId()) {
+            $query->where('academic_year_id', $yearId);
+        }
+
+        return $query;
     }
 
     public static function form(Schema $schema): Schema

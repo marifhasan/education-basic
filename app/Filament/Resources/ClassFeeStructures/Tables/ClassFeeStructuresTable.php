@@ -8,8 +8,11 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -19,32 +22,72 @@ class ClassFeeStructuresTable
     {
         return $table
             ->columns([
-                TextColumn::make('class_id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('academicYear.name')
-                    ->searchable(),
-                TextColumn::make('feeItem.name')
-                    ->searchable(),
-                TextColumn::make('amount')
-                    ->numeric()
+                    ->label('Academic Year')
+                    ->searchable()
+                    ->sortable()
+                    ->weight(FontWeight::Bold),
+
+                TextColumn::make('classModel.name')
+                    ->label('Class')
+                    ->searchable()
                     ->sortable(),
+
+                TextColumn::make('feeItem.name')
+                    ->label('Fee Item')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('feeItem.fee_type')
+                    ->label('Fee Type')
+                    ->badge()
+                    ->toggleable(),
+
+                TextColumn::make('amount')
+                    ->label('Amount')
+                    ->money('BDT', divideBy: 1)
+                    ->sortable(),
+
                 IconColumn::make('is_active')
-                    ->boolean(),
+                    ->label('Active')
+                    ->boolean()
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('academic_year_id')
+                    ->label('Academic Year')
+                    ->relationship('academicYear', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('class_id')
+                    ->label('Class')
+                    ->relationship('classModel', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('fee_item_id')
+                    ->label('Fee Item')
+                    ->relationship('feeItem', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                TernaryFilter::make('is_active')
+                    ->label('Active')
+                    ->placeholder('All structures')
+                    ->trueLabel('Active only')
+                    ->falseLabel('Inactive only'),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([
@@ -57,6 +100,7 @@ class ClassFeeStructuresTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('classModel.name', 'asc');
     }
 }

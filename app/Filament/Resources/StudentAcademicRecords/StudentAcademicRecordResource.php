@@ -10,6 +10,7 @@ use App\Filament\Resources\StudentAcademicRecords\Schemas\StudentAcademicRecordF
 use App\Filament\Resources\StudentAcademicRecords\Schemas\StudentAcademicRecordInfolist;
 use App\Filament\Resources\StudentAcademicRecords\Tables\StudentAcademicRecordsTable;
 use App\Models\StudentAcademicRecord;
+use App\Services\AcademicYearContext;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -17,12 +18,33 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class StudentAcademicRecordResource extends Resource
 {
     protected static ?string $model = StudentAcademicRecord::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    protected static UnitEnum|string|null $navigationGroup = 'Student Management';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $label = 'Academic Record';
+
+    protected static ?string $pluralLabel = 'Academic Records';
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Filter by selected academic year if one is chosen
+        if ($yearId = AcademicYearContext::getSelectedYearId()) {
+            $query->where('academic_year_id', $yearId);
+        }
+
+        return $query;
+    }
 
     public static function form(Schema $schema): Schema
     {

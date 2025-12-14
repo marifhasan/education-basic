@@ -18,14 +18,18 @@ class DatabaseSeeder extends Seeder
             User::create([
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('admin@1234'),
             ]);
-            $this->command->info('✅ Admin user created: admin@example.com / password');
+            $this->command->info('✅ Admin user created: admin@example.com / admin@1234');
         }
 
-        // Call curriculum seeder to ensure default curriculum exists
+        // Call seeders
         $this->call([
-            DefaultCurriculumSeeder::class,
+            // DefaultCurriculumSeeder::class,
+            // FeeItemSeeder::class,
+            // DiscountTypeSeeder::class,
         ]);
+
+        $this->command->info('✅ Database seeded successfully');
     }
 }
