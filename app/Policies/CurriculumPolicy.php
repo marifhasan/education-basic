@@ -14,37 +14,37 @@ class CurriculumPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('ViewAny:Curriculum');
     }
 
     public function view(AuthUser $authUser, Curriculum $curriculum): bool
     {
-        return $authUser->can('View:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('View:Curriculum');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('Create:Curriculum');
     }
 
     public function update(AuthUser $authUser, Curriculum $curriculum): bool
     {
-        return $authUser->can('Update:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('Update:Curriculum');
     }
 
     public function delete(AuthUser $authUser, Curriculum $curriculum): bool
     {
-        return $authUser->can('Delete:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('Delete:Curriculum');
     }
 
     public function restore(AuthUser $authUser, Curriculum $curriculum): bool
     {
-        return $authUser->can('Restore:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('Restore:Curriculum');
     }
 
     public function forceDelete(AuthUser $authUser, Curriculum $curriculum): bool
     {
-        return $authUser->can('ForceDelete:Curriculum');
+        return $authUser->hasRole('super_admin') || $authUser->can('ForceDelete:Curriculum');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool

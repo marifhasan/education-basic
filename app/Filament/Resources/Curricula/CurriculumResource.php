@@ -11,6 +11,7 @@ use App\Filament\Resources\Curricula\Schemas\CurriculumInfolist;
 use App\Filament\Resources\Curricula\Tables\CurriculaTable;
 use App\Models\Curriculum;
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
 
-class CurriculumResource extends Resource
+class CurriculumResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Curriculum::class;
 
@@ -75,5 +76,26 @@ class CurriculumResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    /**
+     * Get the permission identifiers for the resource.
+     */
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'view',
+            'create',
+            'update',
+            'delete',
+            'restore',
+            'force_delete',
+            'replicate',
+            'reorder',
+            'delete_any',
+            'force_delete_any',
+            'restore_any',
+        ];
     }
 }

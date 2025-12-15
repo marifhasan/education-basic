@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AcademicYear;
 use App\Models\AppSetting;
+use App\Models\AdmissionFeeConfiguration;
 use App\Models\ClassFeeStructure;
 use App\Models\ClassModel;
 use App\Models\Curriculum;
@@ -83,12 +84,15 @@ class OnboardingChecklist
                 'icon' => 'heroicon-o-currency-dollar',
             ],
             [
-                'id' => 'admission_config',
-                'title' => 'Set default advance monthly fee',
-                'description' => 'Configure how many months to collect upfront during admission',
-                'completed' => static::checkAdmissionConfig(),
-                'route' => 'filament.pages.setup-wizard',
-                'icon' => 'heroicon-o-cog-6-tooth',
+                'id' => 'admission_fee_config',
+                'title' => 'Configure admission fees for each class',
+                'description' => $currentYear
+                    ? 'Each class needs an active admission fee configuration for ' . $currentYear->name
+                    : 'Set up admission fee configurations for the active academic year',
+                'completed' => static::checkAdmissionFeeConfigurations($currentYear),
+                'route' => 'filament.admin.resources.admission-fee-configurations.index',
+                'icon' => 'heroicon-o-banknotes',
+                'details' => static::getAdmissionFeeConfigDetails($currentYear),
             ],
         ];
     }
@@ -296,11 +300,63 @@ class OnboardingChecklist
     }
 
     /**
-     * Rule 6: default_advance_monthly_fee exists in settings
+     * Rule 6: Each class has an active admission fee configuration in current year
      */
-    protected static function checkAdmissionConfig(): bool
+    protected static function checkAdmissionFeeConfigurations(?AcademicYear $currentYear): bool
     {
-        return AppSetting::has('default_advance_monthly_fee');
+        if (!$currentYear) {
+            return false;
+        }
+
+        $classes = ClassModel::all();
+
+        if ($classes->isEmpty()) {
+            return false;
+        }
+
+        // Each class must have at least one active admission fee configuration for the current year
+        foreach ($classes as $class) {
+            $hasConfig = AdmissionFeeConfiguration::where('academic_year_id', $currentYear->id)
+                ->where('class_id', $class->id)
+                ->where('is_active', true)
+                ->exists();
+
+            if (!$hasConfig) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get admission fee configuration details for display
+     */
+    protected static function getAdmissionFeeConfigDetails(?AcademicYear $currentYear): ?string
+    {
+        if (!$currentYear) {
+            return 'No active academic year';
+        }
+
+        $classes = ClassModel::all();
+        $missingClasses = [];
+
+        foreach ($classes as $class) {
+            $hasConfig = AdmissionFeeConfiguration::where('academic_year_id', $currentYear->id)
+                ->where('class_id', $class->id)
+                ->where('is_active', true)
+                ->exists();
+
+            if (!$hasConfig) {
+                $missingClasses[] = $class->name;
+            }
+        }
+
+        if (empty($missingClasses)) {
+            return '✓ All classes have admission fee configurations';
+        }
+
+        return '✗ Missing configurations for: ' . implode(', ', $missingClasses);
     }
 
     /**

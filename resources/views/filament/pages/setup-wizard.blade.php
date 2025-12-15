@@ -77,19 +77,7 @@
         </div>
     </div>
 
-    {{-- Configuration Form --}}
-    <div class="mb-6">
-        <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-            <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                    Admission Configuration
-                </h3>
-                <form wire:submit="saveConfig">
-                    {{ $this->form }}
-                </form>
-            </div>
-        </div>
-    </div>
+    {{-- No configuration form needed - handled via Admission Fee Configurations resource --}}
 
     {{-- Checklist Steps --}}
     <div class="space-y-4">

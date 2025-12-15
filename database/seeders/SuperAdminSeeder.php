@@ -28,6 +28,9 @@ class SuperAdminSeeder extends Seeder
         $superAdminRole = Role::findByName('super_admin');
         $superAdmin->assignRole($superAdminRole);
 
+        // Give ALL permissions to super admin
+        $superAdmin->syncPermissions(\Spatie\Permission\Models\Permission::all());
+
         $this->command->info('Super admin created successfully!');
         $this->command->info('Email: admin@school.local');
         $this->command->info('Password: admin@12345');

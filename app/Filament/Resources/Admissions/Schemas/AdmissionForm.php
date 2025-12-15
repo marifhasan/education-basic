@@ -8,6 +8,7 @@ use App\Enums\PaymentStatus;
 use App\Models\ClassModel;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -151,6 +152,33 @@ class AdmissionForm
 
                     Section::make('Fee Information')
                         ->schema([
+                            TextInput::make('fee_configuration_info')
+                                ->label('Fee Configuration')
+                                ->disabled()
+                                ->dehydrated(false)
+                                ->formatStateUsing(function ($state, Get $get) {
+                                    $yearId = $get('academic_year_id');
+                                    $classId = $get('class_id');
+
+                                    if (!$yearId || !$classId) {
+                                        return 'Please select Academic Year and Class first';
+                                    }
+
+                                    $config = \App\Models\AdmissionFeeConfiguration::where('academic_year_id', $yearId)
+                                        ->where('class_id', $classId)
+                                        ->where('is_active', true)
+                                        ->first();
+
+                                    if (!$config) {
+                                        return 'No fee configuration found for this class in this academic year';
+                                    }
+
+                                    return "Total Fee: BDT " . number_format($config->total_admission_fee, 2) .
+                                           " ({$config->admissionFeeItems()->count()} items)";
+                                })
+                                ->live()
+                                ->columnSpanFull(),
+
                             TextInput::make('admission_fee_amount')
                                 ->label('Admission Fee')
                                 ->required()

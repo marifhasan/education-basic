@@ -40,22 +40,13 @@ class SetupWizard extends Page implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill([
-            'default_advance_monthly_fee' => AppSetting::get('default_advance_monthly_fee', 0),
-        ]);
+        // No longer need to mount old admission configuration
     }
 
     protected function getFormSchema(): array
     {
         return [
-            TextInput::make('default_advance_monthly_fee')
-                ->label('Default Advance Monthly Fee (months)')
-                ->helperText('How many months of fees to collect during admission (e.g., 3 means collect 3 months upfront)')
-                ->numeric()
-                ->minValue(0)
-                ->maxValue(12)
-                ->default(0)
-                ->required(),
+            // Remove the old admission configuration form
         ];
     }
 
@@ -87,28 +78,6 @@ class SetupWizard extends Page implements HasForms
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('saveConfig')
-                ->label('Save Configuration')
-                ->icon('heroicon-o-check-circle')
-                ->color('info')
-                ->action(function () {
-                    $data = $this->form->getState();
-
-                    AppSetting::set(
-                        'default_advance_monthly_fee',
-                        $data['default_advance_monthly_fee'],
-                        'integer'
-                    );
-
-                    Notification::make()
-                        ->title('Configuration saved')
-                        ->success()
-                        ->send();
-
-                    // Refresh the page to update checklist
-                    $this->redirect(static::getUrl());
-                }),
-
             Action::make('markComplete')
                 ->label('Mark Setup Complete')
                 ->icon('heroicon-o-check-badge')

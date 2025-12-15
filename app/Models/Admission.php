@@ -33,6 +33,7 @@ class Admission extends Model
         'approval_date',
         'approved_by',
         'rejection_reason',
+        'admission_fee_configuration_id',
         'admission_fee_amount',
         'discount_amount',
         'net_amount',
@@ -112,6 +113,11 @@ class Admission extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function admissionFeeConfiguration(): BelongsTo
+    {
+        return $this->belongsTo(AdmissionFeeConfiguration::class);
+    }
+
     public function admissionDiscounts(): HasMany
     {
         return $this->hasMany(AdmissionDiscount::class);
@@ -124,8 +130,57 @@ class Admission extends Model
 
     public function calculateNetAmount(): float
     {
+        if (!$this->exists) {
+            // If the model doesn't exist yet, return the admission fee amount
+            return $this->admission_fee_amount ?? 0;
+        }
+
         $totalDiscount = $this->admissionDiscounts()->sum('discount_amount');
 
         return max(0, $this->admission_fee_amount - $totalDiscount);
+    }
+
+    /**
+     * Get the admission fee configuration for this admission
+     */
+    public function getFeeConfiguration(): ?AdmissionFeeConfiguration
+    {
+        if ($this->admission_fee_configuration_id) {
+            return $this->admissionFeeConfiguration;
+        }
+
+        // Find configuration for this academic year and class
+        return AdmissionFeeConfiguration::where('academic_year_id', $this->academic_year_id)
+            ->where('class_id', $this->class_id)
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * Set admission fee from configuration
+     */
+    public function setFeeFromConfiguration(): void
+    {
+        $config = $this->getFeeConfiguration();
+
+        if ($config) {
+            $this->admission_fee_configuration_id = $config->id;
+            $this->admission_fee_amount = $config->total_admission_fee;
+            $this->net_amount = $this->calculateNetAmount();
+        }
+    }
+
+    /**
+     * Get fee items for this admission
+     */
+    public function getFeeItems()
+    {
+        $config = $this->getFeeConfiguration();
+
+        if (!$config) {
+            return collect([]);
+        }
+
+        return $config->activeAdmissionFeeItems;
     }
 }

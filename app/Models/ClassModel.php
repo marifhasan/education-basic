@@ -51,4 +51,9 @@ class ClassModel extends Model
     {
         return $this->hasMany(Admission::class, 'class_id');
     }
+
+    public function admissionFeeConfigurations(): HasMany
+    {
+        return $this->hasMany(AdmissionFeeConfiguration::class, 'class_id');
+    }
 }
