@@ -134,7 +134,8 @@ class StudentForm
                         ->schema([
                             TextInput::make('previous_school')
                                 ->label('Previous School Name')
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->columnSpanFull(),
 
                             TextInput::make('previous_class')
                                 ->label('Previous Class/Grade')
@@ -147,7 +148,7 @@ class StudentForm
                                 ->maxValue(5)
                                 ->step(0.01),
                         ])
-                        ->columns(3)
+                        ->columns(2)
                         ->collapsible()
                         ->collapsed(),
 

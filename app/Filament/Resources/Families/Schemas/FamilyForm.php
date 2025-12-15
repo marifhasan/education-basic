@@ -122,7 +122,8 @@ class FamilyForm
                             TextInput::make('email')
                                 ->label('Email Address')
                                 ->email()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->columnSpanFull(),
 
                             Textarea::make('present_address')
                                 ->label('Present Address')
@@ -146,7 +147,7 @@ class FamilyForm
                                 ->disabled(fn (Get $get) => $get('same_as_present'))
                                 ->columnSpanFull(),
                         ])
-                        ->columns(3),
+                        ->columns(2),
                 ]),
             ]);
     }

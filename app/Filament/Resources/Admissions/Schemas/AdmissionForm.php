@@ -110,7 +110,7 @@ class AdmissionForm
                                 ->visible(fn(Get $get) => $get('status') === AdmissionStatus::REJECTED->value)
                                 ->columnSpanFull(),
                         ])
-                        ->columns(3)
+                        ->columns(2)
                         ->visible(fn($record) => $record !== null),
                 ]),
                 Grid::make(1)->schema([
@@ -183,9 +183,10 @@ class AdmissionForm
                                 ->disabled()
                                 ->dehydrated()
                                 ->default(0)
-                                ->helperText('Fee Amount - Discount'),
+                                ->helperText('Fee Amount - Discount')
+                                ->columnSpanFull(),
                         ])
-                        ->columns(3),
+                        ->columns(2),
 
                 ]),
             ]);
