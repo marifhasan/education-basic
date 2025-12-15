@@ -13,23 +13,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create default admin user if not exists
-        if (! User::where('email', 'admin@example.com')->exists()) {
-            User::create([
-                'name' => 'Admin User',
-                'email' => 'admin@example.com',
-                'password' => Hash::make('admin@1234'),
-            ]);
-            $this->command->info('✅ Admin user created: admin@example.com / admin@1234');
-        }
-
-        // Call seeders
+        // RBAC Setup - MUST run in this order
+        $this->command->info('🔐 Setting up RBAC system...');
         $this->call([
-            // DefaultCurriculumSeeder::class,
+            RolePermissionSeeder::class,        // 1. Create roles and custom permissions
+            FilamentShieldSeeder::class,        // 2. Generate Filament resource permissions
+            AssignResourcePermissionsSeeder::class, // 3. Assign permissions to roles
+            SuperAdminSeeder::class,            // 4. Create super admin user
+        ]);
+
+        // Application Data Seeders
+        $this->command->info('📊 Seeding application data...');
+        $this->call([
             FeeItemSeeder::class,
             DiscountTypeSeeder::class,
         ]);
 
-        $this->command->info('✅ Database seeded successfully');
+        $this->command->info('✅ Database seeded successfully!');
+        $this->command->warn('⚠️  IMPORTANT: Change the super admin password after first login!');
     }
 }

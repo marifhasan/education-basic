@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class MonthlyFeeGeneration extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'academic_year_id',
         'class_id',
@@ -52,5 +55,16 @@ class MonthlyFeeGeneration extends Model
     public function studentMonthlyFees(): HasMany
     {
         return $this->hasMany(StudentMonthlyFee::class);
+    }
+
+    /**
+     * Configure activity log options
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['academic_year_id', 'class_id', 'section_id', 'month', 'year', 'due_date', 'students_count', 'total_amount', 'generated_by'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

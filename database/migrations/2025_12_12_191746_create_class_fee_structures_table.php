@@ -21,8 +21,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['class_id', 'academic_year_id', 'fee_item_id']);
-            $table->index(['academic_year_id', 'is_active']);
+            $table->unique(['class_id', 'academic_year_id', 'fee_item_id'], 'class_fee_structures_unique');
+            $table->index(['academic_year_id', 'is_active'], 'class_fee_structures_year_active_idx');
         });
     }
 

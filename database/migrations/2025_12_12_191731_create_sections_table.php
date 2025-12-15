@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['class_id', 'academic_year_id', 'name']);
+            $table->unique(['class_id', 'academic_year_id', 'name'], 'sections_class_year_name_unique');
             $table->index(['academic_year_id', 'is_active']);
             $table->index('is_archived');
         });

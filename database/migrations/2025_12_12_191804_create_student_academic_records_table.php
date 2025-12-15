@@ -33,10 +33,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['section_id', 'roll_number']);
-            $table->unique(['student_id', 'academic_year_id']);
-            $table->index(['academic_year_id', 'class_id', 'section_id']);
-            $table->index('enrollment_status');
+            $table->unique(['section_id', 'roll_number'], 'student_academic_records_section_roll_unique');
+            $table->unique(['student_id', 'academic_year_id'], 'student_academic_records_student_year_unique');
+            $table->index(['academic_year_id', 'class_id', 'section_id'], 'student_academic_records_year_class_section_idx');
+            $table->index('enrollment_status', 'student_academic_records_enrollment_status_idx');
         });
     }
 

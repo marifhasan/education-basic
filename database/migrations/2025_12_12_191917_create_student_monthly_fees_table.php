@@ -29,14 +29,14 @@ return new class extends Migration
             // Payment Status
             $table->enum('payment_status', ['unpaid', 'paid', 'waived'])->default('unpaid');
             $table->date('payment_date')->nullable();
-            $table->foreignId('payment_id')->nullable()->constrained('monthly_fee_payments')->onDelete('set null');
+            $table->foreignId('payment_id')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_academic_record_id', 'year', 'month']);
-            $table->index(['year', 'month', 'payment_status']);
-            $table->index('payment_status');
+            $table->unique(['student_academic_record_id', 'year', 'month'], 'student_monthly_fees_record_year_month_unique');
+            $table->index(['year', 'month', 'payment_status'], 'student_monthly_fees_year_month_status_idx');
+            $table->index('payment_status', 'student_monthly_fees_payment_status_idx');
         });
     }
 
